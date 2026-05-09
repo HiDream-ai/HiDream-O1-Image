@@ -2,6 +2,12 @@
 
 HiDream-O1-Image is a natively unified image generative foundation model built on a Pixel-level Unified Transformer (UiT) without external VAEs or disjoint text encoders, which natively encodes raw pixels, text, and task-specific conditions in a single shared token space — supporting text-to-image, image editing, and subject-driven personalization at up to 2,048 × 2,048.
 
+> **HiDream-O1-Image (codename: Peanut) debuts at #8 in the Artificial Analysis Text to Image Arena, which is positioned to be the new leading open weights Text to Image model (2026-5-5).**
+<p align="center">
+  <img src="assets/leaderboard.png" alt="Artificial Analysis Text to Image Arena" width="100%"/>
+  <br><sub><b>Artificial Analysis Text to Image Arena</b> at up to 2,048 × 2,048.</sub>
+</p>
+
 <p align="center">
   <img src="assets/general.webp" alt="General text-to-image generation" width="100%"/>
   <br><sub><b>General text-to-image generation</b> at up to 2,048 × 2,048.</sub>
