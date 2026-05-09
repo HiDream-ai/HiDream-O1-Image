@@ -25,6 +25,7 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
 
 ## Project Updates
 
+- 📄 **May 10, 2026:** Our **technical report** is now available — [HiDream-O1-Image.pdf](assets/HiDream-O1-Image.pdf).
 - 🚀 **May 8, 2026:** We've open-sourced **HiDream-O1-Image (8B)**, including both the undistilled and distilled Dev variants, together with the Reasoning-Driven Prompt Agent.
 
 ## Key Features
