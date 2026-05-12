@@ -111,6 +111,7 @@ generated/
 !assets/**/*.png
 !assets/**/*.jpg
 !assets/**/*.jpeg
+!assets/**/*.mp4
 !docs/**/*.png
 !docs/**/*.jpg
 
