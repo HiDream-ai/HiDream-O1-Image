@@ -8,9 +8,9 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
 - 📕 **May 10, 2026:** Our **technical report** is now available — [📑 HiDream-O1-Image.pdf](assets/HiDream-O1-Image.pdf).
 - 🚀 **May 8, 2026:** We've open-sourced **HiDream-O1-Image (8B)**, including both the undistilled and distilled Dev variants, together with the Reasoning-Driven Prompt Agent.
 
-<p align="center">
-  <video src="https://raw.githubusercontent.com/HiDream-ai/HiDream-O1-Image/main/assets/demo.mp4" controls width="100%"></video>
-</p>
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/cbbdb816-f050-4685-aa51-4741479a0e5c" width="70%" poster=""> </video>
+</div>
 
 > **HiDream-O1-Image (codename: Peanut) debuts at #8 in the Artificial Analysis Text to Image Arena, which is positioned to be the new leading open weights Text to Image model (2026-5-5).**
 <p align="center">
