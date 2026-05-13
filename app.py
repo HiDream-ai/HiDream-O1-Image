@@ -32,11 +32,7 @@ load_dotenv()
 
 from models.pipeline import DEFAULT_TIMESTEPS, generate_image
 from models.qwen3_vl_transformers import Qwen3VLForConditionalGeneration
-from prompt_agent import (
-    build_local_agent,
-    rewrite_prompt_api,
-    rewrite_prompt_local,
-)
+from prompt_agent_v2 import DEFAULT_BASE_URL, DEFAULT_MODEL_ID, refine_prompt
 
 
 # ── Globals ──────────────────────────────────────────────────────────────────
@@ -47,7 +43,6 @@ _STATE = {
     "model": None,
     "processor": None,
     "model_type": "full",
-    "agent": None,
 }
 _JOBS = {}
 
@@ -466,22 +461,16 @@ INDEX_HTML = r"""<!doctype html>
 
       <details id="refine-section">
         <summary>Prompt Refiner</summary>
-        <label>Backend</label>
-        <select id="refine-backend">
-          <option value="api">OpenAI-compatible API</option>
-          <option value="local">Local · Gemma</option>
-        </select>
-        <div id="api-fields" style="margin-top: 12px">
-          <label>Base URL</label>
-          <input id="api-base" type="text" autocomplete="off" name="hd-base-url"
-                 placeholder="https://api.openai.com/v1" value="{{ env_base_url }}" />
-          <label style="margin-top:10px">API Key</label>
-          <input id="api-key" type="password" autocomplete="new-password" name="hd-api-key"
-                 placeholder="sk-..." value="{{ env_api_key }}" />
-          <label style="margin-top:10px">Model</label>
-          <input id="api-model" type="text" autocomplete="off" name="hd-model"
-                 placeholder="gpt-4o-mini" value="{{ env_model }}" />
+        <div style="font-size:11.5px; color:var(--muted); margin-bottom:10px">
+          Calls an OpenAI-compatible endpoint serving <code>HiDream-ai/gemma-4-31B-it-Prompt-Refine</code>.
+          Start the server first with <code>bash start_vllm_server.sh</code>.
         </div>
+        <label>Base URL</label>
+        <input id="api-base" type="text" autocomplete="off" name="hd-base-url"
+               placeholder="http://localhost:8000/v1" value="{{ env_base_url }}" />
+        <label style="margin-top:10px">Model</label>
+        <input id="api-model" type="text" autocomplete="off" name="hd-model"
+               placeholder="HiDream-ai/gemma-4-31B-it-Prompt-Refine" value="{{ env_model }}" />
         <button class="btn-secondary" id="refine-btn" style="margin-top: 14px; margin-bottom: 0">
           Refine Prompt
         </button>
@@ -597,10 +586,6 @@ function renderThumbs() {
   });
 }
 
-$("refine-backend").onchange = (e) => {
-  $("api-fields").style.display = e.target.value === "api" ? "" : "none";
-};
-
 function fileToB64(f) {
   return new Promise((res, rej) => {
     const r = new FileReader();
@@ -652,12 +637,8 @@ $("refine-btn").onclick = async () => {
   try {
     const body = {
       prompt,
-      backend: $("refine-backend").value,
-      api: {
-        base_url: $("api-base").value.trim(),
-        api_key: $("api-key").value.trim(),
-        model: $("api-model").value.trim(),
-      },
+      base_url: $("api-base").value.trim(),
+      model: $("api-model").value.trim(),
     };
     const r = await fetch("/api/refine", {
       method: "POST",
@@ -770,18 +751,11 @@ function escapeHtml(s) {
 
 @app.route("/")
 def index():
-    def _env(*keys, default=""):
-        for k in keys:
-            v = os.environ.get(k)
-            if v:
-                return v
-        return default
     return render_template_string(
         INDEX_HTML,
         model_type=_STATE["model_type"],
-        env_base_url=_env("OPENAI_BASE_URL", ),
-        env_api_key=_env("OPENAI_API_KEY", ),
-        env_model=_env("OPENAI_MODEL", ),
+        env_base_url=os.environ.get("HIDREAM_REFINE_BASE_URL", DEFAULT_BASE_URL),
+        env_model=os.environ.get("HIDREAM_REFINE_MODEL", DEFAULT_MODEL_ID),
     )
 
 
@@ -791,27 +765,11 @@ def api_refine():
     prompt = (data.get("prompt") or "").strip()
     if not prompt:
         return jsonify({"error": "Empty prompt"}), 400
-    backend = data.get("backend", "local")
-    api_cfg = data.get("api") or {}
-
+    base_url = (data.get("base_url") or DEFAULT_BASE_URL).strip()
+    model_id = (data.get("model") or DEFAULT_MODEL_ID).strip()
     try:
-        if backend == "local":
-            if _STATE["agent"] is None:
-                model_id = os.environ.get("HIDREAM_AGENT_MODEL", "google/gemma-4-31B-it")
-                _STATE["agent"] = build_local_agent(model_id)
-            refined = rewrite_prompt_local(*_STATE["agent"], prompt)
-        elif backend == "api":
-            if not all([api_cfg.get("base_url"), api_cfg.get("api_key"), api_cfg.get("model")]):
-                return jsonify({"error": "API requires base_url, api_key, model"}), 400
-            refined = rewrite_prompt_api(
-                prompt,
-                base_url=api_cfg["base_url"],
-                api_key=api_cfg["api_key"],
-                model_name=api_cfg["model"],
-            )
-        else:
-            return jsonify({"error": f"Unknown backend: {backend}"}), 400
-        return jsonify(refined)
+        refined = refine_prompt(prompt, model_id=model_id, base_url=base_url)
+        return jsonify({"prompt": refined})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -903,9 +861,9 @@ def api_generate_start():
                         shift=1.0,
                         timesteps_list=DEFAULT_TIMESTEPS,
                         scheduler_name="flash",
-                        noise_scale_start=7.5,
-                        noise_scale_end=7.5,
-                        noise_clip_std=2.5,
+                        noise_scale_start=8.0,
+                        noise_scale_end=8.0,
+                        noise_clip_std=0.0,
                     )
                 image = generate_image(
                     model=_STATE["model"],

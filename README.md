@@ -49,7 +49,7 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
 | :--- | :--- | :---: | :--- |
 | HiDream-O1-Image | `inference.py` | 50 | [🤗 HiDream-O1-Image](https://huggingface.co/HiDream-ai/HiDream-O1-Image) |
 | HiDream-O1-Image-Dev | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev) |
-| Prompt Agent | `prompt_agent.py` | — | [🤗 google/gemma-4-31B-it](https://huggingface.co/google/gemma-4-31B-it) |
+| Prompt Agent | `prompt_agent_v2.py` | — | [🤗 HiDream-ai/gemma-4-31B-it-Prompt-Refine](https://huggingface.co/HiDream-ai/gemma-4-31B-it-Prompt-Refine) |
 | Web Demo | `app.py` | — | — |
 
 ## Evaluation
@@ -191,37 +191,33 @@ pip install -r requirements.txt
 
 ## Reasoning-Driven Prompt Agent
 
-HiDream-O1-Image ships with a Reasoning-Driven Prompt Agent (`prompt_agent.py`) that explicitly reasons through layout, subject attributes, physical logic, and text-rendering details, then rewrites a raw user instruction into a self-contained English prompt. It supports two backends — pick one with `--backend`.
+HiDream-O1-Image ships with a Reasoning-Driven Prompt Agent (`prompt_agent_v2.py`) that explicitly reasons through layout, subject attributes, physical logic, and text-rendering details, then rewrites a raw user instruction into a self-contained English prompt. Feed its output into `inference.py` for best results on intricate, reasoning-heavy requests.
 
-The agent prints a JSON object with three fields: `prompt` (rewritten English prompt), `reasoning`, and `resolved_knowledge`. Feed the `prompt` field into `inference.py` for best results on intricate, reasoning-heavy requests.
+The agent talks to an OpenAI-compatible endpoint serving [`HiDream-ai/gemma-4-31B-it-Prompt-Refine`](https://huggingface.co/HiDream-ai/gemma-4-31B-it-Prompt-Refine) via vLLM.
 
-### Option A — Local Backend (Gemma-4-31B-it)
+### Step 1 — Download the refiner weights
 
-1. Download the Gemma weights (requires accepting the Gemma license on HuggingFace):
 ```bash
-huggingface-cli download google/gemma-4-31B-it --local-dir /path/to/gemma-4-31B-it
+huggingface-cli download HiDream-ai/gemma-4-31B-it-Prompt-Refine \
+    --local-dir HiDream-ai/gemma-4-31B-it-Prompt-Refine
 ```
 
-2. Run the refiner locally:
+### Step 2 — Start the vLLM server
+
 ```bash
-python prompt_agent.py \
-    --backend local \
-    --model_id /path/to/gemma-4-31B-it \
+bash start_vllm_server.sh
+```
+
+This launches `HiDream-ai/gemma-4-31B-it-Prompt-Refine` on `http://localhost:8000/v1`.
+
+### Step 3 — Run the refiner
+
+```bash
+python prompt_agent_v2.py \
     --prompt "李白的静夜思写在古墙上"
 ```
 
-### Option B — External OpenAI-Compatible API
-
-Use any OpenAI-compatible endpoint (OpenAI, Azure, vLLM, SGLang, DeepSeek, etc.) by providing `--base_url`, `--api_key`, and `--model_name`:
-
-```bash
-python prompt_agent.py \
-    --backend api \
-    --base_url https://api.openai.com/v1 \
-    --api_key $OPENAI_API_KEY \
-    --model_name deepseek-v4-pro \
-    --prompt "李白的静夜思写在古墙上"
-```
+By default the script targets `http://localhost:8000/v1` and `HiDream-ai/gemma-4-31B-it-Prompt-Refine`; override with `--base_url` or `--model_id` if you serve the model elsewhere. The same module also exposes a reusable `refine_prompt(prompt, model_id=..., base_url=...)` function used by `app.py`.
 
 ## Usage
 
@@ -344,7 +340,7 @@ All four arguments can also be set via environment variables (see `.env.example`
 
 ### Prompt Agent in the UI
 
-The sidebar contains a Prompt Agent panel that calls the same Reasoning-Driven Prompt Agent used by `prompt_agent.py`.  Select either the *OpenAI-compatible API* backend (any endpoint, key, and model name) or the *Local · Gemma* backend (set `HIDREAM_AGENT_MODEL` in `.env` or the environment to point to your local Gemma-4-31B-it weights).
+The sidebar contains a Prompt Agent panel that calls the same `refine_prompt` helper from `prompt_agent_v2.py`. Download the refiner weights and start the vLLM server (`bash start_vllm_server.sh`) so that [`HiDream-ai/gemma-4-31B-it-Prompt-Refine`](https://huggingface.co/HiDream-ai/gemma-4-31B-it-Prompt-Refine) is reachable on `http://localhost:8000/v1` before triggering a refine from the UI. The Base URL and Model fields default to that endpoint and can be overridden via `HIDREAM_REFINE_BASE_URL` / `HIDREAM_REFINE_MODEL`.
 
 ### Editing Scheduler (Dev model only)
 
