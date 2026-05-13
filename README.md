@@ -49,7 +49,7 @@ This launches `HiDream-ai/Prompt-Refine` on `http://localhost:8000/v1`.
 
 ```bash
 python prompt_agent_v2.py \
-    --prompt "a cat running"
+    --prompt "A vintage aviation poster featuring a bright red biplane cruising over rolling farmlands. Bold blocky text at the bottom promises adventure in the friendly skies."
 ```
 
 By default the script targets `http://localhost:8000/v1` and `HiDream-ai/Prompt-Refine`; override with `--base_url` or `--model_id` if you serve the model elsewhere. The same module also exposes a reusable `refine_prompt(prompt, model_id=..., base_url=...)` function used by `app.py`.
@@ -64,7 +64,7 @@ Generate an image from a text prompt:
 ```bash
 python inference.py \
     --model_path /path/to/HiDream-O1-Image-Dev-2604 \
-    --prompt "medium shot, eye-level, front view. A woman is seated in an ornate bedroom, illuminated by candlelight, with a calm and composed expression. The subject is a young woman with fair skin, light brown hair styled in an updo with loose tendrils framing her face, and blue eyes. She wears a cream-colored satin robe with delicate floral embroidery and lace trim along the neckline. Her ears are adorned with pearl drop earrings. She is seated on a bed with a dark, intricately carved wooden headboard. To her left, a wooden nightstand holds three lit white candles and a candelabra with multiple lit candles in the background. The bed is covered with patterned pillows and a dark, textured blanket. The walls are paneled with dark wood and feature a large, ornate tapestry with muted earth tones. The lighting creates soft highlights on her face and robe, with warm shadows cast across the room." \
+    --prompt "A vintage aviation poster depicting a bright red biplane cruising over rolling farmlands under a partly cloudy sky, with saturated colors and an aged paper texture. A red biplane with two sets of wings and a radial engine is positioned in the upper center of the image, flying toward the right. A pilot with light skin, wearing a brown flight helmet, goggles, and a brown jacket, is visible in the open cockpit. The biplane has black wheels with red hubs and a spinning propeller. Below, the landscape consists of rolling fields in various shades of green, yellow, and brown, divided by dirt roads and scattered with small houses, including a red barn, a brown house, and a white house. In the background, a line of green trees separates the fields from distant hills under a blue sky with white clouds. The poster has a textured, aged paper border with visible creases and discoloration. At the bottom, the text \"ADVENTURE IN THE FRIENDLY SKIES\" is displayed in large, bold, dark brown capital letters across two lines on a light beige background." \
     --output_image results/t2i.png \
     --height 2048 \
     --width 2048

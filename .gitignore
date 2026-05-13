@@ -138,3 +138,5 @@ temp/
 *.bak
 *.tex
 *.txt
+.claude
+assets/demo.mp4

@@ -39,12 +39,12 @@ def main():
     p.add_argument("--height", type=int, default=2048)
     p.add_argument("--width", type=int, default=2048)
     p.add_argument("--model_type", type=str, default="dev", choices=["full", "dev"])
-    p.add_argument("--seed", type=int, default=32)
+    p.add_argument("--seed", type=int, default=42)
     p.add_argument("--shift", type=float, default=3.0)
     p.add_argument("--guidance_scale", type=float, default=5.0)
-    p.add_argument("--noise_scale_start", type=float, default=7.5)
-    p.add_argument("--noise_scale_end", type=float, default=7.5)
-    p.add_argument("--noise_clip_std", type=float, default=2.5)
+    p.add_argument("--noise_scale_start", type=float, default=8.0)
+    p.add_argument("--noise_scale_end", type=float, default=8.0)
+    p.add_argument("--noise_clip_std", type=float, default=8.0)
     p.add_argument(
         "--editing_scheduler",
         type=str,
@@ -68,7 +68,7 @@ def main():
     processor = AutoProcessor.from_pretrained(args.model_path)
     # NOTE: torch_dtype = torch.float32 will generate more detailed images but with more memory usage
     model = Qwen3VLForConditionalGeneration.from_pretrained(
-        args.model_path, torch_dtype=torch.bfloat16, device_map="cuda"
+        args.model_path, torch_dtype=torch.float32, device_map="cuda"
     ).eval()
 
     os.makedirs(os.path.dirname(os.path.abspath(args.output_image)), exist_ok=True)

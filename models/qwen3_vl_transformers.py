@@ -26,7 +26,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-flash_attn_version = os.environ.get("FA_VERSION", "auto")
+flash_attn_version = os.environ.get("FA_VERSION", "2")
 USE_BF16_ROPE = os.environ.get("USE_BF16_ROPE", "0")
 # Flash Attention import (FA3 preferred, FA2 fallback)
 _flash_attn_func = None
