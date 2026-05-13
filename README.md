@@ -48,7 +48,7 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
 | Name | Script | Inference Steps | HuggingFace Repo |
 | :--- | :--- | :---: | :--- |
 | HiDream-O1-Image | `inference.py` | 50 | [🤗 HiDream-O1-Image](https://huggingface.co/HiDream-ai/HiDream-O1-Image) |
-| HiDream-O1-Image-Dev | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) |
+| HiDream-O1-Image-Dev-2604 | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev-2604](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) |
 | Prompt Agent | `prompt_agent_v2.py` | — | [🤗 HiDream-ai/gemma-4-31B-it-Prompt-Refine](https://huggingface.co/HiDream-ai/gemma-4-31B-it-Prompt-Refine) |
 | Web Demo | `app.py` | — | — |
 
@@ -287,7 +287,7 @@ All three tasks above can be run with the **Dev** model by switching `--model_pa
 
 ```bash
 python inference.py \
-    --model_path /path/to/HiDream-O1-Image-Dev \
+    --model_path /path/to/HiDream-O1-Image-Dev-2604 \
     --prompt "A dog holds a sign that says \"HiDream-O1-Image release.\"" \
     --output_image results/t2i_dev.png \
     --model_type dev
@@ -331,7 +331,7 @@ Then open `http://localhost:7860` in your browser.
 
 | Argument | Default | Description |
 | :--- | :--- | :--- |
-| `--model_path` | `$HIDREAM_MODEL_PATH` | Path to the checkpoint directory (`HiDream-O1-Image` or `HiDream-O1-Image-Dev`). |
+| `--model_path` | `$HIDREAM_MODEL_PATH` | Path to the checkpoint directory (`HiDream-O1-Image` or `HiDream-O1-Image-Dev-2604`). |
 | `--model_type` | `full` | `full` (50-step) or `dev` (28-step). |
 | `--host` | `0.0.0.0` | Bind address for the Flask server. |
 | `--port` | `7860` | Port for the Flask server. |
