@@ -48,7 +48,7 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
 | Name | Script | Inference Steps | HuggingFace Repo |
 | :--- | :--- | :---: | :--- |
 | HiDream-O1-Image | `inference.py` | 50 | [🤗 HiDream-O1-Image](https://huggingface.co/HiDream-ai/HiDream-O1-Image) |
-| HiDream-O1-Image-Dev | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev) |
+| HiDream-O1-Image-Dev | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) |
 | Prompt Agent | `prompt_agent_v2.py` | — | [🤗 HiDream-ai/gemma-4-31B-it-Prompt-Refine](https://huggingface.co/HiDream-ai/gemma-4-31B-it-Prompt-Refine) |
 | Web Demo | `app.py` | — | — |
 
