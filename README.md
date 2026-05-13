@@ -63,7 +63,7 @@ Generate an image from a text prompt:
 
 ```bash
 python inference.py \
-    --model_path /path/to/HiDream-O1-Image \
+    --model_path /path/to/HiDream-O1-Image-Dev-2604 \
     --prompt "medium shot, eye-level, front view. A woman is seated in an ornate bedroom, illuminated by candlelight, with a calm and composed expression. The subject is a young woman with fair skin, light brown hair styled in an updo with loose tendrils framing her face, and blue eyes. She wears a cream-colored satin robe with delicate floral embroidery and lace trim along the neckline. Her ears are adorned with pearl drop earrings. She is seated on a bed with a dark, intricately carved wooden headboard. To her left, a wooden nightstand holds three lit white candles and a candelabra with multiple lit candles in the background. The bed is covered with patterned pillows and a dark, textured blanket. The walls are paneled with dark wood and feature a large, ornate tapestry with muted earth tones. The lighting creates soft highlights on her face and robe, with warm shadows cast across the room." \
     --output_image results/t2i.png \
     --height 2048 \
@@ -71,4 +71,4 @@ python inference.py \
 ```
 
 ## License
-The code in this repository and the HiDream-O1-Image models are licensed under [MIT License](./LICENSE).
+The code in this repository and the HiDream-O1-Image-Dev-2604 models are licensed under [MIT License](./LICENSE).

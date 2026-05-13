@@ -40,7 +40,7 @@ REWRITE_SYSTEM_PROMPT = """你是专业的AI图像生成Prompt工程师的Prompt
 
 只输出改写后的prompt, 不添加其他任何内容:"""
 
-DEFAULT_MODEL_ID = "HiDream-ai/gemma-4-31B-it-Prompt-Refine"
+DEFAULT_MODEL_ID = "HiDream-ai/Prompt-Refine"
 DEFAULT_BASE_URL = "http://localhost:8000/v1"
 
 
@@ -53,7 +53,7 @@ def refine_prompt(
 ) -> str:
     """Rewrite a raw user prompt via an OpenAI-compatible endpoint.
 
-    The endpoint is expected to serve `HiDream-ai/gemma-4-31B-it-Prompt-Refine`
+    The endpoint is expected to serve `HiDream-ai/Prompt-Refine`
     (see `start_vllm_server.sh`).
     """
     client = OpenAI(api_key=api_key, base_url=base_url)

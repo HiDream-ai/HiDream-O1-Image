@@ -38,7 +38,7 @@ def main():
     p.add_argument("--output_image", type=str, default="output.png")
     p.add_argument("--height", type=int, default=2048)
     p.add_argument("--width", type=int, default=2048)
-    p.add_argument("--model_type", type=str, default="full", choices=["full", "dev"])
+    p.add_argument("--model_type", type=str, default="dev", choices=["full", "dev"])
     p.add_argument("--seed", type=int, default=32)
     p.add_argument("--shift", type=float, default=3.0)
     p.add_argument("--guidance_scale", type=float, default=5.0)
