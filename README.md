@@ -6,7 +6,7 @@
 | Name | Script | Inference Steps | HuggingFace Repo |
 | :--- | :--- | :---: | :--- |
 | HiDream-O1-Image-Dev-2604 | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev-2604](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) |
-| Prompt Agent | `prompt_agent_v2.py` | — | [🤗 HiDream-ai/gemma-4-31B-it-Prompt-Refine](https://huggingface.co/HiDream-ai/gemma-4-31B-it-Prompt-Refine) |
+| Prompt Agent | `prompt_agent_v2.py` | — | [🤗 HiDream-ai/Prompt-Refine](https://huggingface.co/HiDream-ai/Prompt-Refine) |
 
 ## Installation
 
@@ -14,6 +14,7 @@
 ```bash
 git clone https://github.com/HiDream-ai/HiDream-O1-Image.git
 cd HiDream-O1-Image
+git checkout dev
 ```
 
 2. Install the required dependencies:
@@ -27,13 +28,13 @@ pip install -r requirements.txt
 
 HiDream-O1-Image ships with a Reasoning-Driven Prompt Agent (`prompt_agent_v2.py`) that explicitly reasons through layout, subject attributes, physical logic, and text-rendering details, then rewrites a raw user instruction into a self-contained English prompt. Feed its output into `inference.py` for best results on intricate, reasoning-heavy requests.
 
-The agent talks to an OpenAI-compatible endpoint serving [`HiDream-ai/gemma-4-31B-it-Prompt-Refine`](https://huggingface.co/HiDream-ai/gemma-4-31B-it-Prompt-Refine) via vLLM.
+The agent talks to an OpenAI-compatible endpoint serving [`HiDream-ai/Prompt-Refine`](https://huggingface.co/HiDream-ai/Prompt-Refine) via vLLM.
 
 ### Step 1 — Download the refiner weights
 
 ```bash
-huggingface-cli download HiDream-ai/gemma-4-31B-it-Prompt-Refine \
-    --local-dir HiDream-ai/gemma-4-31B-it-Prompt-Refine
+huggingface-cli download HiDream-ai/Prompt-Refine \
+    --local-dir HiDream-ai/Prompt-Refine
 ```
 
 ### Step 2 — Start the vLLM server
@@ -42,16 +43,16 @@ huggingface-cli download HiDream-ai/gemma-4-31B-it-Prompt-Refine \
 bash start_vllm_server.sh
 ```
 
-This launches `HiDream-ai/gemma-4-31B-it-Prompt-Refine` on `http://localhost:8000/v1`.
+This launches `HiDream-ai/Prompt-Refine` on `http://localhost:8000/v1`.
 
 ### Step 3 — Run the refiner
 
 ```bash
 python prompt_agent_v2.py \
-    --prompt "李白的静夜思写在古墙上"
+    --prompt "a cat running"
 ```
 
-By default the script targets `http://localhost:8000/v1` and `HiDream-ai/gemma-4-31B-it-Prompt-Refine`; override with `--base_url` or `--model_id` if you serve the model elsewhere. The same module also exposes a reusable `refine_prompt(prompt, model_id=..., base_url=...)` function used by `app.py`.
+By default the script targets `http://localhost:8000/v1` and `HiDream-ai/Prompt-Refine`; override with `--base_url` or `--model_id` if you serve the model elsewhere. The same module also exposes a reusable `refine_prompt(prompt, model_id=..., base_url=...)` function used by `app.py`.
 
 ## Usage
 
