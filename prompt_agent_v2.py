@@ -1,4 +1,7 @@
 import argparse
+import re
+import sys
+import time
 
 from openai import OpenAI
 
@@ -43,6 +46,58 @@ REWRITE_SYSTEM_PROMPT = """你是专业的AI图像生成Prompt工程师的Prompt
 DEFAULT_MODEL_ID = "HiDream-ai/Prompt-Refine"
 DEFAULT_BASE_URL = "http://localhost:8000/v1"
 
+def _has_tail_repetition(caption):
+    N = 5
+    sentence = caption.lower().split()
+    if len(sentence) < 6:
+        return True
+    grams = [tuple(sentence[i: i + N]) for i in range(len(sentence) - N + 1)]
+    grams_dict = {}
+    for ent in grams:
+        grams_dict[ent] = grams_dict.get(ent, 0) + 1
+        if grams_dict[ent] > 11:
+            return True
+    return False
+
+def _call_with_retry(
+    client: OpenAI,
+    *,
+    model_id: str,
+    prompt: str,
+    max_tokens: int,
+    max_attempts: int = 5,
+    retry_delay: float = 30.0,
+) -> str | None:
+    """Call the chat-completions endpoint, retrying on any exception.
+
+    Returns the assistant message content on success, or ``None`` if every
+    attempt raised. Each retry waits ``retry_delay`` seconds before firing.
+    """
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = client.chat.completions.create(
+                model=model_id,
+                messages=[
+                    {"role": "system", "content": REWRITE_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt},
+                ],
+                max_tokens=max_tokens,
+            )
+            return resp.choices[0].message.content
+        except Exception as exc:  # noqa: BLE001 - retry on any API/network error
+            print(
+                f"[refine_prompt] API call attempt {attempt}/{max_attempts} "
+                f"failed: {type(exc).__name__}: {exc}",
+                file=sys.stderr,
+            )
+            if attempt < max_attempts:
+                print(
+                    f"[refine_prompt] sleeping {retry_delay:g}s before retrying...",
+                    file=sys.stderr,
+                )
+                time.sleep(retry_delay)
+    return None
+
 
 def refine_prompt(
     prompt: str,
@@ -50,22 +105,52 @@ def refine_prompt(
     base_url: str = DEFAULT_BASE_URL,
     api_key: str = "EMPTY",
     max_tokens: int = 2048,
+    max_attempts: int = 3,
+    api_max_attempts: int = 5,
+    api_retry_delay: float = 30.0,
 ) -> str:
     """Rewrite a raw user prompt via an OpenAI-compatible endpoint.
 
     The endpoint is expected to serve `HiDream-ai/Prompt-Refine`
     (see `start_vllm_server.sh`).
+
+    Retries up to ``max_attempts`` times if the refined output ends in a
+    degenerate word loop. Each refine attempt itself retries the underlying API
+    call up to ``api_max_attempts`` times (sleeping ``api_retry_delay`` seconds
+    between failures) so transient errors / rate limits don't kill the run.
+    If every attempt is degenerate or the API is unreachable, falls back to the
+    original ``prompt`` so downstream image generation still gets a usable input.
     """
     client = OpenAI(api_key=api_key, base_url=base_url)
-    resp = client.chat.completions.create(
-        model=model_id,
-        messages=[
-            {"role": "system", "content": REWRITE_SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ],
-        max_tokens=max_tokens,
+    for attempt in range(1, max_attempts + 1):
+        refined = _call_with_retry(
+            client,
+            model_id=model_id,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            max_attempts=api_max_attempts,
+            retry_delay=api_retry_delay,
+        )
+        if refined is None:
+            print(
+                f"[refine_prompt] attempt {attempt}/{max_attempts} exhausted API "
+                "retries; trying again...",
+                file=sys.stderr,
+            )
+            continue
+        if not _has_tail_repetition(refined):
+            return refined
+        print(
+            f"[refine_prompt] attempt {attempt}/{max_attempts} produced "
+            "degenerate tail repetition; retrying...",
+            file=sys.stderr,
+        )
+    print(
+        f"[refine_prompt] all {max_attempts} attempts failed; falling back to "
+        "the original prompt.",
+        file=sys.stderr,
     )
-    return resp.choices[0].message.content
+    return prompt
 
 
 def main():
