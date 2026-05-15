@@ -1,4 +1,4 @@
-torch
+torch>=2.10
 torchvision
 transformers==4.57.1
 diffusers
@@ -10,3 +10,4 @@ tqdm
 scipy
 flask
 openai
+python-dotenv

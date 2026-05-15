@@ -3,7 +3,8 @@
 HiDream-O1-Image is a natively unified image generative foundation model built on a Pixel-level Unified Transformer (UiT) without external VAEs or disjoint text encoders, which natively encodes raw pixels, text, and task-specific conditions in a single shared token space — supporting text-to-image, image editing, and subject-driven personalization at up to 2,048 × 2,048.
 
 ## Project Updates
-- 🛠️ **May 13, 2026:** Inference & pipeline updates — accelerated IP inference; the IP pipeline now supports **layout** and **skeleton** conditioning; updated the Dev editing scheduler. For editing tasks we recommend using the **full** model. PyTorch 2.9.x is not recommended due to the [issue](https://github.com/QwenLM/Qwen3-VL/issues/1811)
+- 🚀 **May 14, 2026:** We open-sourced [**HiDream-O1-Image-Dev-2604**](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) with its [prompt refiner](https://huggingface.co/HiDream-ai/Prompt-Refine), tailored for text-to-image generation task.
+- 🛠️ **May 13, 2026:** Inference & pipeline updates — accelerated IP inference; the IP pipeline now supports **layout** and **skeleton** conditioning; updated the Dev editing scheduler. For editing tasks we recommend using the **full** model. PyTorch 2.9.x is not recommended due to the [issue](https://github.com/QwenLM/Qwen3-VL/issues/1811).
 - 🤗 **May 10, 2026:** Try **HiDream-O1-Image** online on Hugging Face Spaces — [🤗 HiDream-O1-Image](https://huggingface.co/spaces/HiDream-ai/HiDream-O1-Image) and [🤗 HiDream-O1-Image-Dev](https://huggingface.co/spaces/HiDream-ai/HiDream-O1-Image-Dev).
 - 📕 **May 10, 2026:** Our **technical report** is now available — [📑 HiDream-O1-Image.pdf](assets/HiDream-O1-Image.pdf).
 - 🚀 **May 8, 2026:** We've open-sourced **HiDream-O1-Image (8B)**, including both the undistilled and distilled Dev variants, together with the Reasoning-Driven Prompt Agent.
@@ -12,7 +13,7 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
   <video src="https://github.com/user-attachments/assets/cbbdb816-f050-4685-aa51-4741479a0e5c" width="70%" poster=""> </video>
 </div>
 
-> **HiDream-O1-Image (codename: Peanut) debuts at #8 in the Artificial Analysis Text to Image Arena, which is positioned to be the new leading open weights Text to Image model (2026-5-5).**
+> **HiDream-O1-Image-Dev-2604 debuts at #8 in the Artificial Analysis Text to Image Arena, which is positioned to be the new leading open weights Text to Image model.**
 <p align="center">
   <img src="assets/leaderboard.png" alt="Artificial Analysis Text to Image Arena" width="100%"/>
   <br><sub><b>Artificial Analysis Text to Image Arena</b> at up to 2,048 × 2,048.</sub>
@@ -47,10 +48,12 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
 
 | Name | Script | Inference Steps | HuggingFace Repo |
 | :--- | :--- | :---: | :--- |
-| HiDream-O1-Image | `inference.py` | 50 | [🤗 HiDream-O1-Image](https://huggingface.co/HiDream-ai/HiDream-O1-Image) |
-| HiDream-O1-Image-Dev | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev) |
-| Prompt Agent | `prompt_agent.py` | — | [🤗 google/gemma-4-31B-it](https://huggingface.co/google/gemma-4-31B-it) |
-| Web Demo | `app.py` | — | — |
+| HiDream-O1-Image | [`inference.py`](./inference.py) | 50 | [🤗 HiDream-O1-Image](https://huggingface.co/HiDream-ai/HiDream-O1-Image) |
+| HiDream-O1-Image-Dev | [`inference.py`](./inference.py) | 28 | [🤗 HiDream-O1-Image-Dev](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev) |
+| Prompt Agent | [`prompt_agent.py`](./prompt_agent.py) | — | [🤗 google/gemma-4-31B-it](https://huggingface.co/google/gemma-4-31B-it) |
+| Web Demo | [`app.py`](./app.py) | — | — |
+| HiDream-O1-Image-Dev-2604 | [`inference.py` (dev branch)](https://github.com/HiDream-ai/HiDream-O1-Image/blob/dev/inference.py) | 28 | [🤗 HiDream-O1-Image-Dev-2604](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) |
+| Prompt Agent 2604 | [`prompt_agent_v2.py` (dev branch)](https://github.com/HiDream-ai/HiDream-O1-Image/blob/dev/prompt_agent_v2.py) | — | [🤗 HiDream-ai/Prompt-Refine](https://huggingface.co/HiDream-ai/Prompt-Refine) |
 
 ## Evaluation
 
@@ -187,7 +190,7 @@ cd HiDream-O1-Image
 pip install -r requirements.txt
 ```
 
-> **Note on `flash-attn`.** We highly recommend installing [`flash-attn`](https://github.com/Dao-AILab/flash-attention) for optimized attention computation. **If you do not (or cannot) install `flash-attn`, you must edit `models/pipeline.py` line 291 and change `"use_flash_attn": True` to `"use_flash_attn": False`** — otherwise inference will fail to import the kernel.
+> **Note on `flash-attn`.** We highly recommend installing [`flash-attn`](https://github.com/Dao-AILab/flash-attention) for optimized attention computation. **If you do not (or cannot) install `flash-attn`, you must edit `models/pipeline.py` line 341 and change `"use_flash_attn": True` to `"use_flash_attn": False`** — otherwise inference will fail to import the kernel.
 
 ## Reasoning-Driven Prompt Agent
 
@@ -311,14 +314,14 @@ For **editing** tasks (exactly one reference image), the Dev model defaults to t
   - `dev`: 28 steps, guidance scale `0.0`, shift `1.0`, flash scheduler with predefined timesteps. For editing tasks (exactly one reference image), the default scheduler is `flow_match` instead — see `--editing_scheduler`.
 - `--seed`: Random seed (default: `32`).
 - `--guidance_scale`: Guidance scale (default: `5.0`). Only effective when `--model_type` is `full`.
-- `--noise_scale_start`, `--noise_scale_end`: Control the scale of the noise injected by the scheduler at each denoising step; the per-step scale linearly interpolates from `noise_scale_start` (first step) to `noise_scale_end` (last step). See `models/pipeline.py:262` and `models/pipeline.py:273`. Defaults: `7.5`, `7.5`.
-- `--noise_clip_std`: Per-step clipping threshold (in units of the injected noise's standard deviation) applied to the noise added during scheduler stepping. See `models/flash_scheduler.py:348-350`. Default: `2.5`.
+- `--noise_scale_start`, `--noise_scale_end`: Control the scale of the noise injected by the scheduler at each denoising step; the per-step scale linearly interpolates from `noise_scale_start` (first step) to `noise_scale_end` (last step). See `models/pipeline.py:313` (initial noise) and `models/pipeline.py:323-326` (per-step linear interpolation). Defaults: `7.5`, `7.5`.
+- `--noise_clip_std`: Per-step clipping threshold (in units of the injected noise's standard deviation) applied to the noise added during scheduler stepping. See `models/flash_scheduler.py:350-354`. Default: `2.5`.
 - `--editing_scheduler`: Scheduler to use for editing tasks (exactly one reference image) when `--model_type dev`. Choices: `flow_match` (default) or `flash`. Ignored for the `full` model and for non-editing tasks.
 - `--keep_original_aspect`: When exactly one reference image is provided, resize it with `max_size=2048` and use its dimensions for the target image (preserves the reference's aspect ratio) if `True`. 
 
 ## Web Demo
 
-`app.py` is a self-contained Flask web application that exposes all generation modes. It also integrates the Reasoning-Driven Prompt Agent.
+`app.py` is a single-file Flask web UI (with HTML / CSS / JS embedded inline) that exposes all generation modes. It also integrates the Reasoning-Driven Prompt Agent.
 
 ### Starting the server
 
@@ -340,11 +343,20 @@ Then open `http://localhost:7860` in your browser.
 | `--host` | `0.0.0.0` | Bind address for the Flask server. |
 | `--port` | `7860` | Port for the Flask server. |
 
-All four arguments can also be set via environment variables (see `.env.example`): `HIDREAM_MODEL_PATH`, `HIDREAM_MODEL_TYPE`, `HIDREAM_HOST`, and `HIDREAM_PORT`.
+All four CLI arguments above can also be set via environment variables (see `.env.example`): `HIDREAM_MODEL_PATH`, `HIDREAM_MODEL_TYPE`, `HIDREAM_HOST`, and `HIDREAM_PORT`.
+
+The Prompt Agent panel in the Web Demo reads additional environment variables from `.env`:
+
+| Env Var | Used by | Description |
+| :--- | :--- | :--- |
+| `HIDREAM_AGENT_MODEL` | Local · Gemma backend | Path or HF repo id of the local Gemma weights. |
+| `OPENAI_BASE_URL` | OpenAI-compatible API backend | Default base URL pre-filled in the UI. |
+| `OPENAI_API_KEY` | OpenAI-compatible API backend | Default API key pre-filled in the UI. |
+| `OPENAI_MODEL` | OpenAI-compatible API backend | Default model name pre-filled in the UI. |
 
 ### Prompt Agent in the UI
 
-The sidebar contains a Prompt Agent panel that calls the same Reasoning-Driven Prompt Agent used by `prompt_agent.py`.  Select either the *OpenAI-compatible API* backend (any endpoint, key, and model name) or the *Local · Gemma* backend (set `HIDREAM_AGENT_MODEL` in `.env` or the environment to point to your local Gemma-4-31B-it weights).
+The sidebar contains a Prompt Agent panel that calls the same Reasoning-Driven Prompt Agent used by `prompt_agent.py`. Select either the *OpenAI-compatible API* backend (any endpoint, key, and model name) or the *Local · Gemma* backend (set `HIDREAM_AGENT_MODEL` in `.env` or the environment to point to your local Gemma-4-31B-it weights).
 
 ### Editing Scheduler (Dev model only)
 
