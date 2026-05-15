@@ -1,4 +1,4 @@
-# HiDream-O1-Image-Dev-2604
+# HiDream-O1-Image-Dev-2604 for Text-to-Image Generation
 
 
 ## Models
@@ -6,7 +6,7 @@
 | Name | Script | Inference Steps | HuggingFace Repo |
 | :--- | :--- | :---: | :--- |
 | HiDream-O1-Image-Dev-2604 | `inference.py` | 28 | [🤗 HiDream-O1-Image-Dev-2604](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) |
-| Prompt Agent | `prompt_agent_v2.py` | — | [🤗 HiDream-ai/Prompt-Refine](https://huggingface.co/HiDream-ai/Prompt-Refine) |
+| Prompt Agent 2604 | `prompt_agent_v2.py` | — | [🤗 HiDream-ai/Prompt-Refine](https://huggingface.co/HiDream-ai/Prompt-Refine) |
 
 ## Installation
 
