@@ -12,7 +12,7 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
   <video src="https://github.com/user-attachments/assets/cbbdb816-f050-4685-aa51-4741479a0e5c" width="70%" poster=""> </video>
 </div>
 
-> **HiDream-O1-Image-Dev-2604 debuts at #8 in the Artificial Analysis Text to Image Arena, which is positioned to be the new leading open weights Text to Image model (2026-5-5).**
+> **HiDream-O1-Image-Dev-2604 debuts at #8 in the Artificial Analysis Text to Image Arena, which is positioned to be the new leading open weights Text to Image model.**
 <p align="center">
   <img src="assets/leaderboard.png" alt="Artificial Analysis Text to Image Arena" width="100%"/>
   <br><sub><b>Artificial Analysis Text to Image Arena</b> at up to 2,048 × 2,048.</sub>
@@ -51,9 +51,10 @@ HiDream-O1-Image is a natively unified image generative foundation model built o
 | HiDream-O1-Image-Dev | [`inference.py`](./inference.py) | 28 | [🤗 HiDream-O1-Image-Dev](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev) |
 | Prompt Agent | [`prompt_agent.py`](./prompt_agent.py) | — | [🤗 google/gemma-4-31B-it](https://huggingface.co/google/gemma-4-31B-it) |
 | HiDream-O1-Image-Dev-2604 | [`inference.py` (dev branch)](https://github.com/HiDream-ai/HiDream-O1-Image/blob/dev/inference.py) | 28 | [🤗 HiDream-O1-Image-Dev-2604](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) |
+| Prompt Agent 2604 | [`prompt_agent_v2.py` (dev branch)](https://github.com/HiDream-ai/HiDream-O1-Image/blob/dev/prompt_agent_v2.py) | — | [🤗 HiDream-ai/Prompt-Refine](https://huggingface.co/HiDream-ai/Prompt-Refine) |
 | Web Demo | [`app.py`](./app.py) | — | — |
 
-> **Note:** `HiDream-O1-Image-Dev-2604` is a **text-to-image specific** model. To use it, please switch to the [`dev` branch](https://github.com/HiDream-ai/HiDream-O1-Image/tree/dev) of this repository.
+> **Note:** `HiDream-O1-Image-Dev-2604` is a **text-to-image specific** model, and `Prompt Agent 2604` is its dedicated prompt refiner. To use it, please switch to the [`dev` branch](https://github.com/HiDream-ai/HiDream-O1-Image/tree/dev) of this repository.
 
 ## Evaluation
 
